@@ -308,9 +308,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5b391f99a8f3dc4f97ddc7a123e6af5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  raycastDistance: 100
-  collectiblePrefab: {fileID: 8433077495129751206, guid: 9007205669ae35d43b2dcb8ec7c44d90, type: 3}
+  collectiblePrefab: {fileID: 1655263823916118104, guid: d9cbde01db0528d4c89ba1cd9a7e81ca, type: 3}
   maxCollectibles: 10
+  raycastDistance: 100
+  rotationSpeed: 5
 --- !u!114 &411235968
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1279,6 +1280,7 @@ GameObject:
   - component: {fileID: 411235966}
   - component: {fileID: 411235968}
   - component: {fileID: 411235967}
+  - component: {fileID: 5866666021498276844}
   m_Layer: 0
   m_Name: Doozy
   m_TagString: Player
@@ -2375,6 +2377,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5866666021498276844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149566655275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a34a5bb20cae1c44b066b67a7f37fe3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &6142095154183208738
 Transform:
   m_ObjectHideFlags: 0
