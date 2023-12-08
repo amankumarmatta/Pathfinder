@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     private int score = 0;
 
+    public Button settings;
+    public GameObject optionsPanel;
+
     void Awake()
     {
         if (Instance == null)
@@ -24,6 +27,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         UpdateScoreText();
+        settings.onClick.AddListener(SettingsBtn);
     }
 
     public void AddPoints(int pointsToAdd)
@@ -39,5 +43,12 @@ public class GameManager : MonoBehaviour
         {
             scoreText.text = "Score: " + score;
         }
+    }
+
+    void SettingsBtn()
+    {
+        Time.timeScale = 0f;
+        settings.gameObject.SetActive(false);
+        optionsPanel.SetActive(true);
     }
 }

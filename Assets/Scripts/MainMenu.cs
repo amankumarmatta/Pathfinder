@@ -1,24 +1,25 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    public GameObject optionsPanel;
-    public Button playButton;
-    public Button optionsButton;
-    public Button exitButton;
+    public GameObject optionsPanel, menuPanel;
+    public Button playButton, optionsButton, exitButton, backButton;
 
     void Start()
     {
         playButton.onClick.AddListener(PlayButtonClicked);
         optionsButton.onClick.AddListener(OptionsButtonClicked);
         exitButton.onClick.AddListener(ExitButtonClicked);
+        backButton.onClick.AddListener(BackButtonClicked);
+    }
 
-        if (optionsPanel != null)
-        {
-            optionsPanel.SetActive(false);
-        }
+    private void BackButtonClicked()
+    {
+        optionsPanel.SetActive(false);
+        menuPanel.SetActive(true);
     }
 
     void PlayButtonClicked()
@@ -28,14 +29,12 @@ public class MainMenu : MonoBehaviour
 
     void OptionsButtonClicked()
     {
-        if (optionsPanel != null)
-        {
-            optionsPanel.SetActive(!optionsPanel.activeSelf);
-        }
+        optionsPanel.SetActive(true);
+        menuPanel.SetActive(false);
     }
 
     void ExitButtonClicked()
     {
-        Debug.Log("Exit button clicked. Display confirmation prompt.");
+        Application.Quit();
     }
 }
