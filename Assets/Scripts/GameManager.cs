@@ -9,8 +9,8 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     private int score = 0;
 
-    public Button settings;
-    public GameObject optionsPanel;
+    public Button settings, options,back, exit;
+    public GameObject optionsPanel, settingsPanel;
 
     void Awake()
     {
@@ -28,6 +28,9 @@ public class GameManager : MonoBehaviour
     {
         UpdateScoreText();
         settings.onClick.AddListener(SettingsBtn);
+        options.onClick.AddListener(OptionsButton);
+        back.onClick.AddListener(BackButtonClicked);
+        exit.onClick.AddListener(ExitButton);
     }
 
     public void AddPoints(int pointsToAdd)
@@ -35,6 +38,11 @@ public class GameManager : MonoBehaviour
         score += pointsToAdd;
 
         UpdateScoreText();
+
+        if (score >= 10)
+        {
+            Debug.Log("You won!");
+        }
     }
 
     void UpdateScoreText()
@@ -49,6 +57,23 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0f;
         settings.gameObject.SetActive(false);
+        settingsPanel.SetActive(true);
+    }
+
+    void OptionsButton()
+    {
+        settingsPanel.SetActive(false);
         optionsPanel.SetActive(true);
+    }
+
+    private void BackButtonClicked()
+    {
+        optionsPanel.SetActive(false);
+        settingsPanel.SetActive(true);
+    }
+
+    void ExitButton()
+    {
+        Application.Quit();
     }
 }

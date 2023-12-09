@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.AI;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class ClickToMove : MonoBehaviour
 {
@@ -10,9 +11,14 @@ public class ClickToMove : MonoBehaviour
     public float raycastDistance = 100f;
     public float rotationSpeed = 5f;
 
+    public AudioClip pickupSound;
+
     private List<Vector3> collectiblePositions = new List<Vector3>();
+    private List<GameObject> instantiatedCollectibles = new List<GameObject>();
     private PlayerController playerController;
     private int collectedCount = 0;
+
+    public AudioSource audioSource;
 
     private TerrainHeightProvider terrainHeightProvider;
 
@@ -35,72 +41,60 @@ public class ClickToMove : MonoBehaviour
 
                 collectiblePositions.Add(targetPosition);
 
-                // Get terrain height at the specified position.
                 float terrainHeight = Terrain.activeTerrain.SampleHeight(targetPosition);
-
-                // Adjust the y-coordinate to place collectibles at terrain height.
                 Vector3 collectibleSpawnPosition = new Vector3(targetPosition.x, terrainHeight, targetPosition.z);
 
-                Instantiate(collectiblePrefab, collectibleSpawnPosition, Quaternion.identity);
+                GameObject newCollectible = Instantiate(collectiblePrefab, collectibleSpawnPosition, Quaternion.identity);
+                instantiatedCollectibles.Add(newCollectible);
 
                 if (collectedCount == 0)
                 {
-                    MoveToPosition(collectibleSpawnPosition);
+                    MoveAndRotateToPosition(collectibleSpawnPosition);
                 }
-
-                RotateTowards(targetPosition);
 
                 collectedCount++;
 
                 if (collectedCount >= maxCollectibles)
-                {
-                    Debug.Log("Maximum number of collectibles reached!");
+                {                             
+                    Destroy(collectiblePrefab);
+                    SceneManager.LoadScene("Win");
                 }
+
+                PlayPickupSound();
             }
         }
     }
-
-    void RotateTowards(Vector3 targetPosition)
+    
+    public void PlayPickupSound()
     {
+        if (pickupSound != null && !audioSource.isPlaying)
+        {
+            audioSource.PlayOneShot(pickupSound);
+        }
+    }
+
+    void MoveAndRotateToPosition(Vector3 targetPosition)
+    {
+        StartCoroutine(MoveAndRotateCoroutine(targetPosition));
+    }
+
+    IEnumerator MoveAndRotateCoroutine(Vector3 targetPosition)
+    {
+        playerController.MoveToPosition(targetPosition, OnArrivedAtCollectible);
+
         Vector3 direction = (targetPosition - transform.position).normalized;
         Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-    }
 
-    void MoveToPosition(Vector3 targetPosition)
-    {
-        // Ignore the vertical component of the target position for rotation.
-        Vector3 horizontalTargetPosition = new Vector3(targetPosition.x, transform.position.y, targetPosition.z);
-
-        // Calculate the direction to the target position.
-        Vector3 direction = (horizontalTargetPosition - transform.position).normalized;
-
-        // Use Quaternion.LookRotation to smoothly rotate the character towards the target direction.
-        Quaternion toRotation = Quaternion.LookRotation(direction, Vector3.up);
-
-        // Use Quaternion.Lerp for smooth interpolation between current rotation and the target rotation.
-        StartCoroutine(RotateCoroutine(toRotation));
-
-        // Move the player to the target position.
-        playerController.MoveToPosition(targetPosition, OnArrivedAtCollectible);
-    }
-
-    IEnumerator RotateCoroutine(Quaternion toRotation)
-    {
-        float duration = 0.5f;
         float elapsed = 0f;
-        Quaternion startRotation = transform.rotation;
-
-        while (elapsed < duration)
+        while (elapsed < 1f)
         {
-            transform.rotation = Quaternion.Lerp(startRotation, toRotation, elapsed / duration);
-
-            elapsed += Time.deltaTime;
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, elapsed);
+            elapsed += Time.deltaTime * rotationSpeed;
 
             yield return null;
         }
 
-        transform.rotation = toRotation;
+        transform.rotation = targetRotation;
     }
 
     void OnArrivedAtCollectible()
@@ -109,11 +103,13 @@ public class ClickToMove : MonoBehaviour
 
         if (collectiblePositions.Count > 0)
         {
-            MoveToPosition(collectiblePositions[0]);
+            MoveAndRotateToPosition(collectiblePositions[0]);
         }
         else
         {
             playerController.MoveToHome();
+
+            collectedCount = 0;
         }
     }
 }
