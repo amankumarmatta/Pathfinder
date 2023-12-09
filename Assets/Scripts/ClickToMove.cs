@@ -56,8 +56,7 @@ public class ClickToMove : MonoBehaviour
 
                 if (collectedCount >= maxCollectibles)
                 {                             
-                    Destroy(collectiblePrefab);
-                    SceneManager.LoadScene("Win");
+                    Destroy(collectiblePrefab);                   
                 }
 
                 PlayPickupSound();

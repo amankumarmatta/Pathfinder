@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -41,7 +42,7 @@ public class GameManager : MonoBehaviour
 
         if (score >= 10)
         {
-            Debug.Log("You won!");
+            SceneManager.LoadScene("Win");
         }
     }
 
