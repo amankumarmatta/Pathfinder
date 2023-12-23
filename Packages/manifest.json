@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.kink3d.mirrors": "file:C:/Users/Administrator/Downloads/kMirrors-master/kMirrors-master",
     "com.unity.2d.animation": "10.0.3",
     "com.unity.2d.pixel-perfect": "5.0.3",
     "com.unity.2d.psdimporter": "9.0.1",
